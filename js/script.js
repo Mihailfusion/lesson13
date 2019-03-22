@@ -30,7 +30,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-  // Timer
+  // TIMER
   let deadline = '2019-04-01';
 
   function getTimeRemaning (endtime){
@@ -81,7 +81,7 @@ window.addEventListener("DOMContentLoaded", () => {
   };
   setClock('timer', deadline);
  
-  //modal 
+  //MODAL 
   let more = document.querySelector('.more'),
     click = document.querySelector('#about'),
     overlay = document.querySelector('.overlay'),
@@ -105,11 +105,10 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.style.overflow = '';
   });
 
-  //  Form
+  //  FORM
 
- 
 
-  let message = {
+ let message = {
     loading: ' Загрузка...',
     success: ' Спасибо! Скоро мы с вами свяжемся!',
     failure: ' Что-то пошло не так'
@@ -122,38 +121,7 @@ window.addEventListener("DOMContentLoaded", () => {
   input.onkeyup = function () {
     this.value = this.value.replace(/[^(\d)|(,)?+]/g, "");
   };
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    form.appendChild(statusMessage);
 
-    let reqest = new XMLHttpRequest();
-    reqest.open('POST', 'server.php');
-    reqest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    let formData = new FormData(form);
-    reqest.send(formData);
-
-    reqest.addEventListener('readystatechange', function () {
-      if (reqest.readyState < 4) {
-        statusMessage.innerHTML = message.loading;
-      } else if (reqest.readyState === 4 && reqest.status == 200) {
-        statusMessage.innerHTML = message.success;
-      } else {
-        statusMessage.innerHTML = message.failure;
-      }
-    });
-
-    for (let i = 0; i < input.length; i++) {
-      input[i].value = "";
-    }
-
-  });
-
-
-
-
-
-  // FOOTER FORM
   let formContact = document.getElementById('form'),
       inputContact = formContact.getElementsByTagName('input');
       inputContact[1].onkeyup = function () {
@@ -166,14 +134,14 @@ window.addEventListener("DOMContentLoaded", () => {
       elem.appendChild(statusMessage);
       statusMessage.style.paddingTop = '20px';
       statusMessage.style.color = '#c78030';
-    let formData = new FormData(formContact);
+    let formData = new FormData(elem);
             let obj = {};
               formData.forEach(function (value, key) {
               obj[key] = value;
             });
             let json = JSON.stringify(obj);
 
-    function postData({}) {
+            function postData() {
       return new Promise(function (resolve, reject) {
         let request = new XMLHttpRequest();
             request.open('POST', 'server.php');
@@ -186,17 +154,18 @@ window.addEventListener("DOMContentLoaded", () => {
                 } else {
                   reject();                  
                 }
-              };
-              
+              };         
             request.send(json);
-
       });
     }
 
     function clearInput() {
-      for (let i = 0; i < inputContact.length; i++) {
-        inputContact[i].value = '';
+      for (let i = 0; i < elem.length; i++) {
+        elem[i].value = '';
       }
+      setTimeout(() => {
+         statusMessage.innerHTML = '';
+      }, 3000);
     }
 
     postData(formData)
@@ -204,17 +173,16 @@ window.addEventListener("DOMContentLoaded", () => {
       .then(() => {
         statusMessage.innerHTML = message.success;
         clearInput();
-        console.log(input.value);
       })
       .catch(() => {
         statusMessage.innerHTML = message.failure;
       })
-      .then(clearInput);
-
+      .then(() => clearInput());
   });
 }
-
+  sendForm(form);
   sendForm(formContact);
+  
        
   // SLIDER
   let slideIndex = 1,
@@ -250,7 +218,6 @@ window.addEventListener("DOMContentLoaded", () => {
     elem.addEventListener('input', () => {
       let res = Math.round(+inputsCalc[0].value * +inputsCalc[1].value * +inputsCalc[2].options[inputsCalc[2].selectedIndex].value * 4000);
       animNum(totalValue, res, 50, 1000);
-      console.log('res', res, typeof (res));
     })
   });
   inputCalc.forEach((elem) => {
@@ -258,7 +225,6 @@ window.addEventListener("DOMContentLoaded", () => {
       this.value = this.value.replace(/[^0-9]/g, '')
       let res = Math.round(+inputsCalc[0].value * +inputsCalc[1].value * +inputsCalc[2].options[inputsCalc[2].selectedIndex].value * 4000);
       animNum(totalValue, res, 50, 1000);
-      console.log(this.value, typeof (this.value));
     });
   });
 
@@ -266,7 +232,7 @@ window.addEventListener("DOMContentLoaded", () => {
     let num = n || 0,
       fps = f || 10,
       time = t || 1000,
-      steps = time / (1000 / fps),
+      steps = time / (8000 / fps),
       cNum = 0,
       d0 = num / steps;
     let timer = setInterval(function () {
